@@ -1,0 +1,17 @@
+server:
+  port: 8070
+
+#DATABASE-CONNECTION-PROPERTIES
+spring:
+  application:
+    name: Danuu-Market
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:~/danuu-market
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
