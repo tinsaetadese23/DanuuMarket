@@ -4,13 +4,11 @@ import com.e_commerce.danuu_market.models.Orders;
 import com.e_commerce.danuu_market.models.Products;
 import com.e_commerce.danuu_market.repository.OrderRepository;
 import com.e_commerce.danuu_market.service.OrderService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +43,25 @@ public class OrderController {
         }
 
         return ResponseEntity.ok(orders);
+    }
+
+    public ResponseEntity<?> createOrder(@RequestBody Orders order){
+        if(Integer.valueOf(order.getProduct_id()) == null){
+            order_responses.put("error","Order has no product");
+            order_responses.put("error_code","-2");
+            ResponseEntity.status(HttpStatus.CONFLICT).body(order_responses);
+        }
+
+       Orders new_order =  orderService.createNewOrder(order);
+        if(new_order == null){
+            order_responses.put("error","No order has been created!");
+            order_responses.put("error_code",ResponseEntity.noContent().toString());
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(order_responses);
+        }
+
+        order_responses.put("success","New order resource has been created");
+        order_responses.put("error",null);
+        return ResponseEntity.status(HttpStatus.CREATED).body(order_responses);
     }
 
 }
