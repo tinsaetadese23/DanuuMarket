@@ -1,10 +1,9 @@
 package com.e_commerce.danuu_market.service;
 
-import com.e_commerce.danuu_market.Exceptions.ProductAlreadyExists;
-import com.e_commerce.danuu_market.Exceptions.ProductDoesNotExist;
+import com.e_commerce.danuu_market.Exceptions.AlreadyExistException;
+import com.e_commerce.danuu_market.Exceptions.NotFoundException;
 import com.e_commerce.danuu_market.models.Products;
 import com.e_commerce.danuu_market.repository.ProductRepository;
-import org.aspectj.apache.bcel.classfile.ExceptionTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class ProductService {
 
     public Products createProduct(Products products){
         if(this.findByName(products.getName()) != null){
-            throw  new ProductAlreadyExists("Product Already Exists");
+            throw  new AlreadyExistException("Product Already Exists");
         }
         return productRepository.save(products);
     }
@@ -34,22 +33,22 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Products findById(int id) throws ProductDoesNotExist {
+    public Products findById(int id) throws NotFoundException {
         if(Integer.valueOf(id) == null){
             throw new NullPointerException();
         }
         if(productRepository.findById(id) == null){
-            throw new ProductDoesNotExist("Such Product Does Not Exist");
+            throw new NotFoundException("Such Product Does Not Exist");
         }
         return productRepository.findById(id);
     }
 
-    public void deleteProduct(int id) throws ProductDoesNotExist {
+    public void deleteProduct(int id) throws NotFoundException {
         if(Integer.valueOf(id) == null){
             throw new NullPointerException();
         }
         if(productRepository.findById(id) == null){
-            throw new ProductDoesNotExist("Such Product Does Not Exist");
+            throw new NotFoundException("Such Product Does Not Exist");
         }
         Products products = productRepository.findById(id);
         productRepository.delete(products);
@@ -60,7 +59,7 @@ public class ProductService {
             throw new NullPointerException("null pointer exception");
         }
         if(productRepository.findById(products.getId()) == null){
-            throw new ProductDoesNotExist("product does not exist");
+            throw new NotFoundException("product does not exist");
         }
         Products old_products = productRepository.findById(products.getId());
         if(old_products == products){

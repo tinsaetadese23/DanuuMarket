@@ -1,7 +1,7 @@
 package com.e_commerce.danuu_market.controllers;
 
-import com.e_commerce.danuu_market.Exceptions.ProductAlreadyExists;
-import com.e_commerce.danuu_market.Exceptions.ProductDoesNotExist;
+import com.e_commerce.danuu_market.Exceptions.AlreadyExistException;
+import com.e_commerce.danuu_market.Exceptions.NotFoundException;
 import com.e_commerce.danuu_market.models.Products;
 import com.e_commerce.danuu_market.service.ProductService;
 import org.slf4j.Logger;
@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +47,7 @@ public class ProductController {
             Products product = productService.findById(id);
             return ResponseEntity.ok(product);
         }
-        catch(ProductDoesNotExist e){
+        catch(NotFoundException e){
             errorResponse.put("error", "No such product exists in our database");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
             }
@@ -79,7 +78,7 @@ public class ProductController {
         try{
             productService.createProduct(products);
             return ResponseEntity.status(HttpStatus.CREATED).body(products);
-        }catch(ProductAlreadyExists pe){
+        }catch(AlreadyExistException pe){
             errorResponse.put("error","Product with this name does exist");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
         }catch(Exception e){

@@ -1,14 +1,12 @@
 package com.e_commerce.danuu_market.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +15,7 @@ import java.util.Date;
 public class Orders {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private int quantity;
@@ -28,5 +26,13 @@ public class Orders {
 
     private Date order_date;
 
-    private int product_id;
+    @ManyToMany
+    @JoinTable(
+            name="order_items",
+            joinColumns = @JoinColumn(name="order_id"),
+            inverseJoinColumns = @JoinColumn(name="product_id")
+    )
+    private List<Products> products;
+
+
 }
